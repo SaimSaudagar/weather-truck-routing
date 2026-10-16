@@ -112,14 +112,14 @@ export default function MapView({ plan, selectedId, onSelect, heatFrame, heat, h
           type: 'heatmap',
           source: 'heat',
           paint: {
-            'heatmap-weight': ['interpolate', ['linear'], ['get', 'w'], 0.25, 0, 0.5, 0.4, 0.75, 0.75, 1, 1],
+            'heatmap-weight': ['interpolate', ['linear'], ['get', 'w'], 0, 0.08, 0.25, 0.15, 0.5, 0.4, 0.75, 0.75, 1, 1],
             'heatmap-intensity': 1,
             'heatmap-radius': 20,
             'heatmap-opacity': 0.75,
             'heatmap-color': [
               'interpolate', ['linear'], ['heatmap-density'],
               0, 'rgba(0,0,0,0)',
-              0.1, 'rgba(224,177,0,0.25)',
+              0.08, 'rgba(47,158,91,0.22)',
               0.3, 'rgba(224,177,0,0.55)',
               0.5, 'rgba(238,122,28,0.65)',
               0.75, 'rgba(214,40,57,0.75)',
