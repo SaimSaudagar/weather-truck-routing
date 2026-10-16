@@ -91,7 +91,8 @@ def fake_get(url, params=None, **kwargs):
 
 
 @pytest.fixture(autouse=True)
-def fake_services():
+def fake_services(settings):
+    settings.OSRM_MIN_INTERVAL = 0
     cache.clear()
     with mock.patch("requests.get", side_effect=fake_get):
         yield
@@ -173,3 +174,39 @@ def test_validation(client, override, message):
     resp = _post(client, **override)
     assert resp.status_code == 400
     assert message in resp.json()["error"]
+
+
+def test_rate_limited_router_is_retried(client):
+    calls = {"n": 0}
+
+    def flaky(url, params=None, **kwargs):
+        if "route/v1" in url:
+            calls["n"] += 1
+            if calls["n"] == 1:
+                return FakeResponse({"message": "The service is overloaded"}, status=429)
+        return fake_get(url, params, **kwargs)
+
+    with mock.patch("routing.services.osrm.time.sleep"), mock.patch("requests.get", side_effect=flaky):
+        resp = _post(client)
+    assert resp.status_code == 200
+    assert calls["n"] == 2
+
+
+def test_routes_are_cached_between_searches(client):
+    with mock.patch("requests.get", side_effect=fake_get) as get:
+        _post(client, load_lb=20_000)
+        _post(client, load_lb=40_000)
+    route_calls = [c for c in get.call_args_list if "route/v1" in c.args[0]]
+    assert len(route_calls) == 1
+
+
+def test_persistent_rate_limit_gives_friendly_error(client):
+    def busy(url, params=None, **kwargs):
+        if "route/v1" in url:
+            return FakeResponse({"message": "The service is overloaded"}, status=429)
+        return fake_get(url, params, **kwargs)
+
+    with mock.patch("routing.services.osrm.time.sleep"), mock.patch("requests.get", side_effect=busy):
+        resp = _post(client)
+    assert resp.status_code == 502
+    assert "busy" in resp.json()["error"]
