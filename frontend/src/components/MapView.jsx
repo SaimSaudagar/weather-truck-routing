@@ -69,7 +69,7 @@ function checkpointFeatures(route) {
 function heatRadius(heat) {
   if (!heat) return 20
   const lat = heat.points.reduce((s, p) => s + p[1], 0) / heat.points.length
-  const metersPerPxZ0 = 156543.03 * Math.cos((lat * Math.PI) / 180)
+  const metersPerPxZ0 = 78271.03 * Math.cos((lat * Math.PI) / 180)
   const r0 = (heat.spacing_mi * 1609.344 * 1.1) / metersPerPxZ0
   // radius doubles with each zoom level; stop growing at 200px, past that
   // the GPU cost climbs and the grid is too coarse to be worth zooming into
@@ -119,8 +119,9 @@ export default function MapView({ plan, selectedId, onSelect, heatFrame, heat, h
             'heatmap-color': [
               'interpolate', ['linear'], ['heatmap-density'],
               0, 'rgba(0,0,0,0)',
-              0.08, 'rgba(47,158,91,0.22)',
-              0.3, 'rgba(224,177,0,0.55)',
+              0.05, 'rgba(47,158,91,0.28)',
+              0.2, 'rgba(47,158,91,0.4)',
+              0.35, 'rgba(224,177,0,0.55)',
               0.5, 'rgba(238,122,28,0.65)',
               0.75, 'rgba(214,40,57,0.75)',
               0.95, 'rgba(107,31,168,0.8)',
