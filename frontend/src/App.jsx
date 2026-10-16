@@ -82,7 +82,7 @@ export default function App() {
     return heat.intensity.map((row, h) => ({
       type: 'FeatureCollection',
       features: row.flatMap((w, i) =>
-        heat.levels[h][i] < 0 || w < 0.25
+        heat.levels[h][i] < 0
           ? []
           : [{ type: 'Feature', properties: { w }, geometry: { type: 'Point', coordinates: heat.points[i] } }],
       ),
