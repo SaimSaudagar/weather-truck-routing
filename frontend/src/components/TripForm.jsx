@@ -52,7 +52,7 @@ export default function TripForm({ form, setForm, onSubmit, loading }) {
             type="number"
             min="1"
             max="80000"
-            step="500"
+            step="1"
             value={form.load}
             onChange={(e) => update('load')(e.target.value)}
             required
