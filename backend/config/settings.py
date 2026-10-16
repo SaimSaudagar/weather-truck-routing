@@ -59,6 +59,8 @@ LOGGING = {
 
 # External services
 OSRM_URL = os.environ.get("OSRM_URL", "https://router.project-osrm.org")
+# the public OSRM demo allows about one request a second
+OSRM_MIN_INTERVAL = float(os.environ.get("OSRM_MIN_INTERVAL", "1.1"))
 PHOTON_URL = os.environ.get("PHOTON_URL", "https://photon.komoot.io/api/")
 OPEN_METEO_URL = os.environ.get("OPEN_METEO_URL", "https://api.open-meteo.com/v1/forecast")
 OPEN_METEO_API_KEY = os.environ.get("OPEN_METEO_API_KEY", "")  # only for the paid customer- endpoint
