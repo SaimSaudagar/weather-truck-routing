@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: truck-routing-api
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    # One worker on purpose: the default cache is in-process, and the heatmap
+    # request has to land on the same process that built the plan. Set
+    # REDIS_URL and bump workers if you need more than one.
+    startCommand: gunicorn config.wsgi --workers 1 --threads 8 --timeout 90 --bind 0.0.0.0:$PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.7"
+      - key: DJANGO_DEBUG
+        value: "0"
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: ALLOWED_HOSTS
+        value: ".onrender.com"
+      - key: CORS_ALLOWED_ORIGINS
+        sync: false
